@@ -65,7 +65,7 @@ Add the following to `conftest.py`:
 import os
 from pathlib import Path
 import pytest
-from paralympics import create_app
+from paralympics import create_app, db
 
 
 @pytest.fixture(scope='module')
@@ -90,6 +90,10 @@ def app():
 
     # clean up / reset resources
     # Delete the test database
+    with app.app_context():
+      # Close the database session before deleting
+      db.session.remove()
+      db.engine.dispose()
     os.unlink(db_path)
 
 
